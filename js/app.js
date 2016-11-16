@@ -2,7 +2,7 @@ $(document).ready(function (){
 	$("#search-form button").click(function(event){
 		event.preventDefault();
 		var term = cleanTerm($("#search-form input").val());
-		var results = callItunesSearch(term, showResults, noResults, error);
+		var results = callItunesSearch(term, showResults);
 	});
 
 	function callItunesSearch(searchTerm, showResults, noResultsMessage, error){
@@ -11,7 +11,23 @@ $(document).ready(function (){
 		var root = 'https://itunes.apple.com/search?';
 		$.ajax({
 		// completa el ajax aquí
-			
+			url: root,
+			method: 'get',
+			data:{
+				term:searchTerm,
+				limit: 30
+			},
+			success: function(data){
+				console.log("Todo esta bien");
+				showResults(JSON.parse(data));
+			},
+			/*error: function(data){
+				console.log(data.status);
+				noResultsMessage();
+			},*/
+			complete: function(data){
+				stopLoading();
+			}
         });
 	}
 
@@ -19,18 +35,31 @@ $(document).ready(function (){
 	function showResults(data){
 		console.log(data);
 		data.results.map(function(cancion, index){
+			var audio = new Audio();
+			audio.src = cancion.previewUrl;
+			audio.controls = true;
+			
 			var song  = document.createElement("div");
 			$(song).addClass("song");
 			// genera los elementos de cada canción aquí
+			var image = document.createElement("img");
+			$(image).attr("src",cancion.artworkUrl30);
+			$(song).append(audio);
+			$(song).append(image);
+			
 			$("#search-results").append(song);
+			
+			
 		});
 	}
   
- 	function noResults(){
+ 	/*function noResults(){
        	$("#search-results").html(song);
     }
-  	function error(){console.log("Error")}
-	
+  	function error(){
+		console.log("Error")
+	}
+	*/
 	function cleanTerm(term){
         term = $.trim(term);
 		return term.replace(/s/g, "+");
@@ -43,10 +72,12 @@ $(document).ready(function (){
 		div.append(dot1);
 		div.append(dot2);
 		$("#search-results").html("").append(div);
+		
 	}
 
 	function stopLoading(){
 		$(".spinner").remove();
 	}
+	
 });
 
