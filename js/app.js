@@ -5,7 +5,7 @@ $(document).ready(function (){
 		var results = callItunesSearch(term, showResults);
 	});
 
-	function callItunesSearch(searchTerm, showResults, noResultsMessage, error){
+	function callItunesSearch(searchTerm, showResults){
 		startLoading();
 		// Pueden revisar el API en el link https://affiliate.itunes.apple.com/resources/documentation/itunes-store-web-service-search-api/
 		var root = 'https://itunes.apple.com/search?';
